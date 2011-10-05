@@ -250,11 +250,25 @@ alias gosu='git submodule update --init'
       <li class="slide">!!</li>
       <li class="slide">$(...)</li>
       <li class="slide">$(!!)</li>
-      <li class="slide">bash-tools</li>
+      <li class="slide"><a href="https://github.com/cxreg/smartcd">smartcd</a></li>
       <li class="slide">pushd/popd/autopushd</li>
-      <li class="slide">bash-tools + ack</li>
+      <li class="slide">smartcd + ack</li>
       <li class="slide">(ctrl-r or ESC /) back-history-search</li>
    </ul>
+</div>
+
+<div class="slide">
+   <h2>smartcd</h2>
+
+   In ~/.smartcd/home/code/lynx/bash_enter
+   <pre class="brush:bash">
+autostash ACK_OPTIONS PERL5LIB LYNX_DEBUG
+export ACK_OPTIONS='-i --ignore-dirs=cgi/lib'
+export PERL5LIB="App/lib:cgi/My:cgi"
+export LYNX_DEBUG=1
+
+alias plackup='plackup -R App/lib,cgi/My'
+   </pre>
 </div>
 
 <div class="slide">
