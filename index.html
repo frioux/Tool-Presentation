@@ -274,10 +274,39 @@ alias plackup='plackup -R App/lib,cgi/My'
 <div class="slide">
    <h2>ssh stuff</h2>
    <ul>
-      <li class="slide">~/.ssh/config</li>
       <li class="slide">keys</li>
       <li class="slide">config sections</li>
       <li class="slide">ssh-copy-id</li>
+   </ul>
+</div>
+
+<div class="slide">
+   <h2>ssh keys</h2>
+
+   No password needed for remote connections
+</div>
+
+<div class="slide">
+   <h2>~/.ssh/config</h2>
+
+   <ul>
+      <li class="slide"> Use it for super short urls </li>
+      <li class="slide">Example: <pre>
+host gh
+     user git
+     hostname github.com
+     port 22
+     identityfile ~/.ssh/keys/frew_gh
+
+host irc
+     user frew
+     hostname warpedreality.org
+     port 22
+     identityfile ~/.ssh/keys/frew_irc
+      </pre></li>
+      <li class="slide"><pre>
+ssh irc
+git clone gh:frioux/Foo-Repo</pre></li>
    </ul>
 </div>
 
