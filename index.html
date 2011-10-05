@@ -92,14 +92,155 @@
    <h2>My tools</h2>
    <ul>
       <li class="slide"> git-amend-file-split </li>
-      <li class="slide">git-log-file</li>
-      <li class="slide">git-hm</li>
-      <li class="slide">wrap-git</li>
-      <li class="slide">gitk</li>
-      <li class="slide">grr</li>
-      <li class="slide">gre</li>
-      <li class="slide">gosu</li>
+      <li class="slide"> git-log-file </li>
+      <li class="slide"> git-hm </li>
+      <li class="slide"> wrap-git </li>
+      <li class="slide"> gitk </li>
+      <li class="slide"> grr< /li>
+      <li class="slide"> gre </li>
+      <li class="slide"> gosu </li>
    </ul>
+</div>
+
+<div class="slide">
+   <h2>git amend-file-split</h2>
+<pre class="brush:perl">
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+die 'changes in working directory!' if qx(git status -s);
+
+chomp(my $msg = qx(git log --pretty=%s -1));
+qx(git reset HEAD^);
+
+my %changed_files = map { m/(..)\s+(.+)/; ($2, $1) }
+   split /\0/, qx(git status -z);
+
+for (keys %changed_files) {
+   my $t = $changed_files{$_};
+
+   my $action;
+
+   $action = 'Added'    if $t eq '??';
+   $action = 'Modified' if $t eq ' M';
+   $action = 'Deleted'  if $t eq ' D';
+
+   system(qw(git add), $_);
+   system(qw(git commit -m), "$msg [$action $_]");
+}
+</pre>
+</div>
+
+<div class="slide">
+   <h2>git log-file</h2>
+
+<pre class="brush:bash">
+#!/bin/bash
+
+git show --stat $(git log --pretty=%h $1)
+</pre>
+</div>
+
+<div class="slide">
+   <h2>git hm</h2>
+   (short for handymerge)
+
+<pre class="brush:bash">
+#!/bin/bash
+
+gitk $(cat .git/MERGE_HEAD) $(cat .git/ORIG_HEAD) $@ &amp;
+</pre>
+</div>
+
+<div class="slide">
+   <h2>wrap-git</h2>
+
+<pre class="brush:perl">
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+my %aliases = map { split(/\n/, $_, 2) }
+   split /\0/,
+   `git config -z --get-regexp alias\\.`;
+
+my %commit_aliases = (( commit =&gt; 1 ),
+   map { s/alias\.//; $_ =&gt; 1 }
+   grep $aliases{$_} =~ /^commit\b/,
+   keys %aliases);
+
+my ($command, @args) = @ARGV;
+
+if ($commit_aliases{$command} &gt;&gt; $args[0] =~ /^-a|^--all/) {
+   my @staged = grep /^M/, split /\0/, `git status -z`;
+   if (@staged) {
+      print "There are staged changes, are you sure you want to commit all? (y/N) ";
+      chomp(my $answer = &lt;STDIN&gt;);
+      if ($answer =~ /^y/i) {
+         run_command()
+      }
+   } else {
+      run_command()
+   }
+} else {
+   run_command()
+}
+
+sub run_command {
+   system 'git', $command, @args;
+   exit $? &gt;&gt; 8;
+}
+</pre>
+<pre class="brush:bash">
+#!/bin/zsh
+alias git='noglob wrap-git'
+</pre>
+</div>
+
+<div class="slide">
+   <h2>gitk</h2>
+
+<pre class="brush:bash">
+#!/bin/zsh
+alias gitk='noglob g_tk'
+</pre>
+<pre class="brush:bash">
+#!/bin/bash
+function g_tk() {
+   /usr/bin/env 'gitk' "$@" &amp;
+}
+</pre>
+</div>
+
+<div class="slide">
+   <h2>grr</h2>
+<pre class="brush:bash">
+#!/bin/bash
+alias grr='g_tk ^origin/release HEAD'
+</pre>
+<pre class="brush:bash">
+#!/bin/zsh
+alias grr='noglob g_tk ^origin/release HEAD'
+</pre>
+</div>
+
+<div class="slide">
+   <h2>gre</h2>
+
+<pre class="brush:bash">
+alias gre='git rebase --root --onto origin/release -i --autosquash'
+</pre>
+</div>
+
+<div class="slide">
+   <h2>gosu</h2>
+
+<pre class="brush:bash">
+alias gosu='git submodule update --init'
+</pre>
 </div>
 
 <div class="slide">
@@ -180,6 +321,7 @@
 <script type="text/javascript" src="SyntaxHighlighter/scripts/XRegExp.js"></script>
 <script type="text/javascript" src="SyntaxHighlighter/scripts/shCore.js"></script>
 <script type="text/javascript" src="SyntaxHighlighter/scripts/shBrushPerl.js"></script>
+<script type="text/javascript" src="SyntaxHighlighter/scripts/shBrushBash.js"></script>
 
 <!-- Specific to this page -->
 <script src="index.js"></script>
