@@ -71,7 +71,9 @@
    <h2>RAD GIT TRIX</h2>
 
    <ul>
-      <li class="slide"> git co - </li>
+      <li class="slide"> git checkout - </li>
+      <li class="slide"> git cherry-pick </li>
+      <li class="slide"> git rebase </li>
    </ul>
 </div>
 
@@ -113,6 +115,7 @@
       <li class="slide"> git-amend-file-split </li>
       <li class="slide"> git-log-file </li>
       <li class="slide"> git-hm </li>
+      <li class="slide"> git-revert-whitespace </li>
       <li class="slide"> wrap-git </li>
       <li class="slide"> gitk </li>
       <li class="slide"> grr </li>
@@ -170,6 +173,15 @@ git show --stat $(git log --pretty=%h $1)
 #!/bin/bash
 
 gitk $(cat .git/MERGE_HEAD) $(cat .git/ORIG_HEAD) $@ &amp;
+</pre>
+</div>
+
+<div class="slide">
+   <h2>git revert-whitespace</h2>
+<pre class="brush:bash">
+#!/bin/bash
+
+git diff -w &gt; foo.patch &amp;&amp; git co . &amp;&amp; git apply foo.patch &amp;&amp; rm foo.patch
 </pre>
 </div>
 
